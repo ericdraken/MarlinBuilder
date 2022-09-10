@@ -80,6 +80,15 @@ else
   cp "$TMP/Marlin/_Statusscreen.h"     "$OUT"
 fi
 
+# Use a custom thermistor table if it exists, and be sure
+# to set #define TEMP_SENSOR_0 2 in Configuration.h. You should get
+# #warning "Using custom thermistor table temptable_2" [-Wcpp]
+# if you have successfully set the thermistor to 2
+if [[ -e "$OUT/thermistor_2.h" ]]; then
+  echo "Using thermistor_2.h found in $OUT."
+  cp "$OUT/thermistor_2.h"     "$TMP/Marlin/src/module/thermistor"
+fi
+
 printf "\n\033[0;32mSetting up Docker\033[0m\n"
 
 cd "$TMP"

@@ -539,8 +539,12 @@
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
  */
-// The SIMAX3D 100K 3950 from Amazon
-#define TEMP_SENSOR_0 11
+// FAILED - The SIMAX3D 100K 3950 from Amazon
+// This ends up showing 210°C but a probe shows 165°C
+// #define TEMP_SENSOR_0 11
+// DRAKEN - Overwrite thermistor_2.h in the Bash script
+// Why not overwrite #11? So we can compare how off the table is.
+#define TEMP_SENSOR_0 2
 
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
@@ -620,15 +624,19 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 275
-#define HEATER_1_MAXTEMP 275
-#define HEATER_2_MAXTEMP 275
-#define HEATER_3_MAXTEMP 275
-#define HEATER_4_MAXTEMP 275
-#define HEATER_5_MAXTEMP 275
-#define HEATER_6_MAXTEMP 275
-#define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      125
+// DRAKEN - Set max temps based on what the heaters can really do
+#define DRAKEN_HEATER_MAXTEMP 265
+#define DRAKEN_BED_MAXTEMP 110
+
+#define HEATER_0_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_1_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_2_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_3_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_4_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_5_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_6_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define HEATER_7_MAXTEMP DRAKEN_HEATER_MAXTEMP
+#define BED_MAXTEMP      DRAKEN_BED_MAXTEMP
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -1179,7 +1187,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 45 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -2495,8 +2503,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-// DRAKEN - Strange things happen without SD card support
-#define SDSUPPORT
+// #define SDSUPPORT
 
 /**
  * SD CARD: ENABLE CRC
