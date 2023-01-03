@@ -21,13 +21,16 @@ REMOTE_CONFIG_FOLDER="Creality/Ender-3%20Pro/CrealityV427"
 # See ini/stm32f1.ini for more strings
 PLATFORM="STM32F103RE_creality"
 
+GITREPO=https://github.com/MarlinFirmware/Marlin.git
+
+[ -e local.conf ] && source local.conf
+
 ##################
 #  END SETTINGS  #
 ##################
 
 
 CONFIGS="https://raw.githubusercontent.com/MarlinFirmware/Configurations/$MARLIN_BRANCH/config/examples/${REMOTE_CONFIG_FOLDER}"
-GITREPO=https://github.com/MarlinFirmware/Marlin.git
 HERE="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"
 
 printf "\n\033[0;32mGetting Marlin source code for branch %s\033[0m\n" ${MARLIN_BRANCH}
@@ -48,31 +51,31 @@ else
   echo "Using cached Marlin at $TMP"
 fi
 
-printf "\n\033[0;32mGetting Marlin config files for %s\033[0m\n" ${REMOTE_CONFIG_FOLDER}
-
 # Select a tool to download config files
 which curl >/dev/null && TOOL='curl -L -s -S -f -o wgot'
 which wget >/dev/null && TOOL='wget -q -O wgot'
 
-cd "$TMP/Marlin"
-
-$TOOL "$CONFIGS/Configuration.h"     >/dev/null 2>&1 && mv wgot Configuration.h
-$TOOL "$CONFIGS/Configuration_adv.h" >/dev/null 2>&1 && mv wgot Configuration_adv.h
-$TOOL "$CONFIGS/_Bootscreen.h"       >/dev/null 2>&1 && mv wgot _Bootscreen.h
-$TOOL "$CONFIGS/_Statusscreen.h"     >/dev/null 2>&1 && mv wgot _Statusscreen.h
-
-rm -f wgot
-cd - >/dev/null
-
 # Copy over existing config files from the user, if present
 if [[ -e "$OUT/Configuration.h" ]]; then
   echo "Using configuration files found in $OUT."
-  echo "Delete these files to use the remote configuration files instead."
+  printf "Delete %s file to use the remote configuration files instead.\n" $OUT/Configuration.h
   cp "$OUT/Configuration.h"     "$TMP/Marlin"
   cp "$OUT/Configuration_adv.h" "$TMP/Marlin"
-  cp "$OUT/_Bootscreen.h"       "$TMP/Marlin"
-  cp "$OUT/_Statusscreen.h"     "$TMP/Marlin"
+  [ -e "$OUT/_Bootscreen.h" ] && cp "$OUT/_Bootscreen.h"       "$TMP/Marlin"
+  [ -e "$OUT/_Statusscreen.h" ] && cp "$OUT/_Statusscreen.h"     "$TMP/Marlin"
 else
+  printf "\n\033[0;32mGetting Marlin config files for %s\033[0m\n" ${REMOTE_CONFIG_FOLDER}
+
+  cd "$TMP/Marlin"
+
+  $TOOL "$CONFIGS/Configuration.h"     >/dev/null 2>&1 && mv wgot Configuration.h
+  $TOOL "$CONFIGS/Configuration_adv.h" >/dev/null 2>&1 && mv wgot Configuration_adv.h
+  $TOOL "$CONFIGS/_Bootscreen.h"       >/dev/null 2>&1 && mv wgot _Bootscreen.h
+  $TOOL "$CONFIGS/_Statusscreen.h"     >/dev/null 2>&1 && mv wgot _Statusscreen.h
+
+  rm -f wgot
+  cd - >/dev/null
+
   echo "Using remote configuration files found at $REMOTE_CONFIG_FOLDER."
   cp "$TMP/Marlin/Configuration.h"     "$OUT"
   cp "$TMP/Marlin/Configuration_adv.h" "$OUT"
@@ -109,6 +112,6 @@ time docker-compose run --rm marlin platformio run -e "$PLATFORM" --silent
 
 printf "\n\033[0;32mCopying compiled firmware\033[0m\n"
 
-find "$TMP/.pio/build/$PLATFORM" -name "firmware-*.bin" -exec cp '{}' "${OUT}" \;
+find "$TMP/.pio/build/$PLATFORM" -name "firmware*.bin" -exec cp '{}' "${OUT}" \;
 
 printf "\n\033[0;32mFirmware successfully compiled\033[0m\n"
