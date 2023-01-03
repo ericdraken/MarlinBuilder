@@ -61,8 +61,8 @@ if [[ -e "$OUT/Configuration.h" ]]; then
   printf "Delete %s file to use the remote configuration files instead.\n" $OUT/Configuration.h
   cp "$OUT/Configuration.h"     "$TMP/Marlin"
   cp "$OUT/Configuration_adv.h" "$TMP/Marlin"
-  cp "$OUT/_Bootscreen.h"       "$TMP/Marlin"
-  cp "$OUT/_Statusscreen.h"     "$TMP/Marlin"
+  [ -e "$OUT/_Bootscreen.h" ] && cp "$OUT/_Bootscreen.h"       "$TMP/Marlin"
+  [ -e "$OUT/_Statusscreen.h" ] && cp "$OUT/_Statusscreen.h"     "$TMP/Marlin"
 else
   printf "\n\033[0;32mGetting Marlin config files for %s\033[0m\n" ${REMOTE_CONFIG_FOLDER}
 
