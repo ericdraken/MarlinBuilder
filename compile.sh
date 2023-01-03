@@ -21,13 +21,16 @@ REMOTE_CONFIG_FOLDER="Creality/Ender-3%20Pro/CrealityV427"
 # See ini/stm32f1.ini for more strings
 PLATFORM="STM32F103RE_creality"
 
+GITREPO=https://github.com/MarlinFirmware/Marlin.git
+
+[ -e local.conf ] && source local.conf
+
 ##################
 #  END SETTINGS  #
 ##################
 
 
 CONFIGS="https://raw.githubusercontent.com/MarlinFirmware/Configurations/$MARLIN_BRANCH/config/examples/${REMOTE_CONFIG_FOLDER}"
-GITREPO=https://github.com/MarlinFirmware/Marlin.git
 HERE="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"
 
 printf "\n\033[0;32mGetting Marlin source code for branch %s\033[0m\n" ${MARLIN_BRANCH}
