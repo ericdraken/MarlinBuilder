@@ -112,6 +112,6 @@ time docker-compose run --rm marlin platformio run -e "$PLATFORM" --silent
 
 printf "\n\033[0;32mCopying compiled firmware\033[0m\n"
 
-find "$TMP/.pio/build/$PLATFORM" -name "firmware-*.bin" -exec cp '{}' "${OUT}" \;
+find "$TMP/.pio/build/$PLATFORM" -name "firmware*.bin" -exec cp '{}' "${OUT}" \;
 
 printf "\n\033[0;32mFirmware successfully compiled\033[0m\n"
